@@ -10,8 +10,9 @@ import Link from "next/link"
 import { ProjectImage } from "@/components/project-image"
 import { projects } from "@/lib/projects"
 import { useRouter, useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
-export default function ProjectsPage() {
+function ProjectsContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -74,7 +75,7 @@ export default function ProjectsPage() {
       </div>
 
       <div className="mt-10 grid gap-6 md:grid-cols-2">
-        {visibleProjects.map((project, index) => (
+        {visibleProjects.map((project) => (
           <Card
             key={project.slug}
             className="group h-full border-[#02C39A]/40 bg-white/75 py-0 transition-all duration-300 hover:-translate-y-2 hover:border-[#00A896] hover:shadow-xl"
@@ -83,18 +84,16 @@ export default function ProjectsPage() {
               href={`/projects/${project.slug}`}
               className="block"
             >
-              
-<ProjectImage
-  src={project.thumbnailImage ?? project.heroImage}
-  alt={
-    project.thumbnailImageAlt ??
-    project.heroImageAlt ??
-    `${project.title} project preview`
-  }
-  sizes="(max-width: 768px) 100vw, 50vw"
-  className="aspect-[16/9] w-full"
-/>
-
+              <ProjectImage
+                src={project.thumbnailImage ?? project.heroImage}
+                alt={
+                  project.thumbnailImageAlt ??
+                  project.heroImageAlt ??
+                  `${project.title} project preview`
+                }
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="aspect-[16/9] w-full"
+              />
             </Link>
 
             <CardHeader className="py-6">
@@ -108,14 +107,14 @@ export default function ProjectsPage() {
               </CardTitle>
 
               <p className="text-sm font-medium text-[#028090]/80">
-  {new Date(`${project.date}T12:00:00`).toLocaleDateString(
-    "en-GB",
-    {
-      month: "long",
-      year: "numeric",
-    }
-  )}
-</p>
+                {new Date(`${project.date}T12:00:00`).toLocaleDateString(
+                  "en-GB",
+                  {
+                    month: "long",
+                    year: "numeric",
+                  }
+                )}
+              </p>
 
               <CardDescription className="leading-7 text-[#028090]">
                 {project.description}
@@ -144,5 +143,19 @@ export default function ProjectsPage() {
         </p>
       )}
     </main>
+  )
+}
+
+export default function ProjectsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto max-w-5xl px-6 py-16 md:px-12">
+          <p className="text-[#028090]">Loading projects...</p>
+        </main>
+      }
+    >
+      <ProjectsContent />
+    </Suspense>
   )
 }
