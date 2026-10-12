@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import {
   NavigationMenu,
@@ -15,76 +14,51 @@ import {
   RiUserLine,
 } from "@remixicon/react"
 
-import { projects } from "@/lib/projects"
 import { BuildingOrb } from "@/components/mysteriousorb"
 
 export function SiteNavigation() {
-  const [projectsOpen, setProjectsOpen] = useState(false)
-  const [projectsReady, setProjectsReady] = useState(false)
-
-  useEffect(() => {
-    setProjectsOpen(
-      window.localStorage.getItem("projects-menu-open") === "true"
-    )
-
-    requestAnimationFrame(() => {
-      setProjectsReady(true)
-    })
-  }, [])
-
-  function toggleProjects() {
-    setProjectsOpen((open) => {
-      const nextOpen = !open
-
-      window.localStorage.setItem(
-        "projects-menu-open",
-        String(nextOpen)
-      )
-
-      return nextOpen
-    })
-  }
-
   return (
-    <header className="flex min-h-0 w-full flex-col border-r border-[#028090] bg-[#05668D] px-6 py-6 text-white md:min-h-screen md:w-64 md:px-6 md:py-8">
+    <header className="flex min-h-0 w-full flex-col border-b border-[#028090] bg-[#05668D] px-4 py-3 text-white md:min-h-screen md:w-64 md:border-b-0 md:border-r md:px-6 md:py-8">
 
       {/* PROFILE */}
-      <div>
+      <div className="flex items-center justify-between gap-3 md:block">
         <Link
           href="/home"
           className="flex items-center gap-3"
         >
-          <span className="flex size-10 items-center justify-center rounded-full bg-[#02C39A] font-bold text-[#05668D]">
+          <span className="flex size-12 items-center justify-center rounded-full bg-[#02C39A] text-lg font-bold text-[#05668D] md:size-14 md:text-xl">
             JT
           </span>
 
-          <span className="font-bold text-white">
+          <span className="text-lg font-bold text-white md:text-xl">
             Jamie Till
           </span>
         </Link>
 
-        <p className="mt-2 text-sm text-[#F0F3BD]">
+        <p className="mt-0 shrink-0 text-base text-[#F0F3BD] md:mt-2 md:text-lg">
           BSc Honours Graduate
         </p>
       </div>
 
       {/* CURRENTLY BUILDING */}
-      <div className="mt-4">
-        <BuildingOrb />
+      <div className="mt-2 flex items-center justify-center gap-2 md:mt-4 md:block">
+        <div className="h-12 w-12 shrink-0 md:h-32 md:w-full">
+          <BuildingOrb />
+        </div>
 
-        <div className="-mt-3 text-center">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#02C39A]">
+        <div className="text-left md:-mt-3 md:text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#02C39A] md:text-sm md:tracking-[0.2em]">
             Currently building
           </p>
 
-          <p className="mt-1 text-sm font-semibold text-white">
+          <p className="mt-0.5 text-base font-semibold text-white md:mt-1 md:text-lg">
             Interactive Portfolio
           </p>
 
-          <div className="mt-2 flex items-center justify-center gap-2">
+          <div className="mt-0.5 flex items-center justify-start gap-2 md:mt-2 md:justify-center">
             <span className="size-1.5 animate-pulse rounded-full bg-[#02C39A]" />
 
-            <span className="text-[11px] text-[#F0F3BD]/80">
+            <span className="text-sm text-[#F0F3BD]/80 md:text-base">
               In development
             </span>
           </div>
@@ -92,17 +66,17 @@ export function SiteNavigation() {
       </div>
 
       {/* NAVIGATION */}
-      <NavigationMenu className="-mt-38 max-w-none">
-        <NavigationMenuList className="flex flex-col items-stretch gap-2">
+      <NavigationMenu className="mt-2 max-w-none md:mt-3 md:flex-none">
+        <NavigationMenuList className="grid w-full grid-cols-4 items-center gap-1 md:flex md:flex-col md:items-stretch md:gap-2">
 
           {/* HOME */}
           <NavigationMenuItem>
             <NavigationMenuLink
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-white transition-colors hover:bg-[#028090] hover:text-[#F0F3BD]"
+              className="flex flex-col items-center justify-center gap-1.5 rounded-md px-1 py-2 text-base text-white transition-colors hover:bg-[#028090] hover:text-[#F0F3BD] md:flex-row md:justify-start md:gap-3 md:px-3 md:text-lg"
               render={<Link href="/home" />}
             >
               <RiHomeLine
-                className="size-5"
+                className="size-6 md:size-7"
                 aria-hidden="true"
               />
               <span>Home</span>
@@ -112,11 +86,11 @@ export function SiteNavigation() {
           {/* ABOUT */}
           <NavigationMenuItem>
             <NavigationMenuLink
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-white transition-colors hover:bg-[#028090] hover:text-[#F0F3BD]"
+              className="flex flex-col items-center justify-center gap-1.5 rounded-md px-1 py-2 text-base text-white transition-colors hover:bg-[#028090] hover:text-[#F0F3BD] md:flex-row md:justify-start md:gap-3 md:px-3 md:text-lg"
               render={<Link href="/about" />}
             >
               <RiUserLine
-                className="size-5"
+                className="size-6 md:size-7"
                 aria-hidden="true"
               />
               <span>About Me</span>
@@ -125,98 +99,26 @@ export function SiteNavigation() {
 
           {/* PROJECTS */}
           <NavigationMenuItem>
-            <div>
-              <button
-                type="button"
-                onClick={toggleProjects}
-                aria-expanded={projectsOpen}
-                className="flex w-full items-center justify-between rounded-md px-3 py-2 text-white transition-colors hover:bg-[#028090] hover:text-[#F0F3BD]"
-              >
-                <span className="flex items-center gap-3">
-                  <RiFolderLine
-                    className="size-5"
-                    aria-hidden="true"
-                  />
-                  Projects
-                </span>
-
-                <span
-                  className={`text-sm ${
-                    projectsReady
-                      ? "transition-transform"
-                      : ""
-                  } ${
-                    projectsOpen
-                      ? "rotate-180"
-                      : ""
-                  }`}
-                  aria-hidden="true"
-                >
-                  ⌄
-                </span>
-              </button>
-
-              {/* PROJECT SUBMENU */}
-              <div
-                className={`projects-list ml-3 border-l border-[#02C39A] pl-2 ${
-                  projectsReady
-                    ? "projects-list-transition"
-                    : ""
-                } ${
-                  projectsOpen
-                    ? "projects-list-open"
-                    : ""
-                }`}
-              >
-                <div className="projects-list-content flex flex-col gap-1">
-
-                  <NavigationMenuLink
-                    className="text-white hover:bg-[#028090] hover:text-[#F0F3BD]"
-                    render={<Link href="/projects" />}
-                  >
-                    <span className="flex items-center gap-2">
-                      <RiFolderLine
-                        className="size-4"
-                        aria-hidden="true"
-                      />
-                      All projects
-                    </span>
-                  </NavigationMenuLink>
-
-                  {projects.map((project) => (
-                    <NavigationMenuLink
-                      key={project.slug}
-                      className="text-white hover:bg-[#028090] hover:text-[#F0F3BD]"
-                      render={
-                        <Link
-                          href={`/projects/${project.slug}`}
-                        />
-                      }
-                    >
-                      <span className="flex items-center gap-2">
-                        <RiFolderLine
-                          className="size-4"
-                          aria-hidden="true"
-                        />
-
-                        {project.title}
-                      </span>
-                    </NavigationMenuLink>
-                  ))}
-
-                </div>
-              </div>
-            </div>
+            <NavigationMenuLink
+              className="flex flex-col items-center justify-center gap-1.5 rounded-md px-1 py-2 text-base text-white transition-colors hover:bg-[#028090] hover:text-[#F0F3BD] md:flex-row md:justify-start md:gap-3 md:px-3 md:text-lg"
+              render={<Link href="/projects" />}
+            >
+              <RiFolderLine
+                className="size-6 md:size-7"
+                aria-hidden="true"
+              />
+              <span>Projects</span>
+            </NavigationMenuLink>
           </NavigationMenuItem>
 
           {/* CONTACT */}
           <NavigationMenuItem>
             <NavigationMenuLink
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-white transition-colors hover:bg-[#028090] hover:text-[#F0F3BD]"
+              className="flex flex-col items-center justify-center gap-1.5 rounded-md px-1 py-2 text-base text-white transition-colors hover:bg-[#028090] hover:text-[#F0F3BD] md:flex-row md:justify-start md:gap-3 md:px-3 md:text-lg"
               render={<Link href="/contact" />}
             >
               <RiMailLine
-                className="size-5"
+                className="size-6 md:size-7"
                 aria-hidden="true"
               />
               <span>Contact</span>

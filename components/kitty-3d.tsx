@@ -1,9 +1,11 @@
 "use client"
 
-import { Suspense, useEffect, useRef } from "react"
+import { Suspense, useEffect, useMemo, useRef } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { useGLTF } from "@react-three/drei"
 import * as THREE from "three"
+import { clone as cloneSkeleton } from "three/addons/utils/SkeletonUtils.js"
+import { pointerPosition } from "@/components/pointer-tracker"
 
 type VectorRef = { current: THREE.Vector3 }
 type RopePoint = { position: THREE.Vector3; previous: THREE.Vector3 }
@@ -12,6 +14,8 @@ const ROPE_SEGMENTS = 7
 const ROPE_SEGMENT_LENGTH = 0.6
 const YARN_ANCHOR_X = 2.5
 const YARN_PLANE_POINT = new THREE.Vector3(YARN_ANCHOR_X, 6, 0)
+const SAFE_HOME_POINTER = new THREE.Vector2(0.85, 0.8)
+const SAFE_HOME_MOBILE_POINTER = new THREE.Vector2(0.85, 0.25)
 // Generous safety net only; real bounds come from the camera's own frustum.
 const ANCHOR_MIN = new THREE.Vector3(-30, -30, -30)
 const ANCHOR_MAX = new THREE.Vector3(30, 30, 30)
@@ -22,29 +26,10 @@ const FULL_REACH_DISTANCE = 6.5
 // in front of the cat, so the yarn's anchor matches the cursor everywhere, not
 // just inside the canvas.
 function PointerAnchor({ anchorRef }: { anchorRef: VectorRef }) {
-  const { camera, gl } = useThree()
-  const pointerRef = useRef({ x: 0, y: 0 })
+  const { camera, gl, size } = useThree()
   const planeRef = useRef(new THREE.Plane())
   const raycasterRef = useRef(new THREE.Raycaster())
-
-  useEffect(() => {
-  const handlePointerMove = (event: PointerEvent) => {
-    const canvas = gl.domElement
-    const rect = canvas.getBoundingClientRect()
-
-    pointerRef.current.x =
-      ((event.clientX - rect.left) / rect.width) * 2 - 1
-
-    pointerRef.current.y =
-      -((event.clientY - rect.top) / rect.height) * 2 + 1
-  }
-
-  window.addEventListener("pointermove", handlePointerMove)
-
-  return () => {
-    window.removeEventListener("pointermove", handlePointerMove)
-  }
-}, [gl])
+  const pointerRef = useRef(new THREE.Vector2())
 
   useEffect(() => {
     const planeNormal = camera.position.clone().sub(YARN_PLANE_POINT).normalize()
@@ -52,7 +37,27 @@ function PointerAnchor({ anchorRef }: { anchorRef: VectorRef }) {
   }, [camera])
 
   useFrame(() => {
-    raycasterRef.current.setFromCamera(new THREE.Vector2(pointerRef.current.x, pointerRef.current.y), camera)
+    if (!pointerPosition.hasMoved) {
+      pointerRef.current.copy(
+        size.width <= 600 ? SAFE_HOME_MOBILE_POINTER : SAFE_HOME_POINTER
+      )
+    } else {
+      const canvasBounds = gl.domElement.getBoundingClientRect()
+      const pointerX = ((pointerPosition.x + 1) / 2) * window.innerWidth
+      const pointerY = ((1 - pointerPosition.y) / 2) * window.innerHeight
+
+      if (canvasBounds.width > 0 && canvasBounds.height > 0) {
+        pointerRef.current.set(
+          ((pointerX - canvasBounds.left) / canvasBounds.width) * 2 - 1,
+          1 - ((pointerY - canvasBounds.top) / canvasBounds.height) * 2
+        )
+      }
+    }
+
+    raycasterRef.current.setFromCamera(
+      pointerRef.current,
+      camera
+    )
     const intersection = new THREE.Vector3()
     const hit = raycasterRef.current.ray.intersectPlane(planeRef.current, intersection)
 
@@ -87,16 +92,67 @@ rightEyeRestScale?: THREE.Vector3
 }
 
 function CatModel({
+  anchorRef,
   yarnRef,
   pawRef,
   grabbedRef,
+  topRegion,
 }: {
+  anchorRef: VectorRef
   yarnRef: VectorRef
   pawRef: VectorRef
   grabbedRef: React.MutableRefObject<boolean>
+  topRegion: boolean
 }) {
-  const { scene } = useGLTF("/cat.glb")
+  const { camera, size } = useThree()
+  const { scene: sourceScene } = useGLTF("/cat.glb")
+  const { scene, floorY } = useMemo(() => {
+    const clonedScene = cloneSkeleton(sourceScene)
+    clonedScene.traverse((object) => {
+      if (object instanceof THREE.Mesh) {
+        let ancestor: THREE.Object3D | null = object
+        let castsShadow = true
+        let receivesShadow = true
 
+        while (ancestor) {
+          const normalizedName = ancestor.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "")
+
+          if (normalizedName.includes("head")) {
+            receivesShadow = false
+          }
+
+          if (
+            normalizedName.includes("paw") ||
+            normalizedName.includes("foot") ||
+            normalizedName.includes("toe")
+          ) {
+            receivesShadow = true
+          }
+
+          ancestor = ancestor.parent
+        }
+
+        object.castShadow = castsShadow
+        object.receiveShadow = receivesShadow
+      }
+    })
+    const bounds = new THREE.Box3().setFromObject(clonedScene)
+    return { scene: clonedScene, floorY: bounds.min.y }
+  }, [sourceScene])
+  const cameraTarget = new THREE.Vector3(-3.3, 3.1, 0)
+  const cameraDistance = camera.position.distanceTo(cameraTarget)
+  const cameraFov = camera instanceof THREE.PerspectiveCamera ? camera.fov : 40
+  const worldUnitsPerPixel =
+    (2 * cameraDistance * Math.tan(THREE.MathUtils.degToRad(cameraFov / 2))) /
+    size.height
+  const catY = topRegion
+    ? size.width <= 600 ? 0.1 : 5.3
+    : 3.5
+  const catZ = topRegion && size.width > 600
+    ? -128 * worldUnitsPerPixel
+    : 0
   const rigRef = useRef<CatRig>({
     tailBones: [],
     headRestRotation: new THREE.Euler(),
@@ -565,7 +621,9 @@ const getRandomAttackInterval = () =>
       const state =
         armStateRef.current
 
-      if (state === "attack") {
+      if (pointerPosition.isOverNavbar) {
+        armStateRef.current = "rest"
+      } else if (state === "attack") {
   // Stop attacking once kitty has caught the yarn.
   if (grabbedRef.current) {
     armStateRef.current = "ready"
@@ -1162,11 +1220,18 @@ paw.rotation.z =
   })
 
   return (
-  <primitive
-    object={scene}
-    position={[0, 3.5, 0]}
-  />
-)
+    <group position={[0, catY, catZ]}>
+      <mesh
+        receiveShadow
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, floorY + 0.05, 0]}
+      >
+        <planeGeometry args={[48, 36]} />
+        <shadowMaterial transparent opacity={0.48} />
+      </mesh>
+      <primitive object={scene} />
+    </group>
+  )
 }
 
 function YarnBall({
@@ -1180,7 +1245,11 @@ function YarnBall({
   pawRef: VectorRef
   grabbedRef: React.MutableRefObject<boolean>
 }) {
-  const { scene } = useGLTF("/Yarn.glb")
+  const { scene: sourceScene } = useGLTF("/Yarn.glb")
+  const scene = useMemo(
+    () => cloneSkeleton(sourceScene),
+    [sourceScene]
+  )
 
   const groupRef = useRef<THREE.Group>(null)
   const ballRef = useRef<THREE.Object3D>(null)
@@ -1195,6 +1264,7 @@ function YarnBall({
 
   // Prevent immediate re-grabbing after release.
   const grabCooldownUntilRef = useRef(0)
+  const wasOverNavbarRef = useRef(false)
 
   // How far from the paw the yarn sits while being held.
   const grabOffsetRef = useRef(new THREE.Vector3())
@@ -1236,6 +1306,8 @@ function YarnBall({
         geometry,
         new THREE.LineBasicMaterial({
           color: "#028090",
+          depthTest: false,
+          depthWrite: false,
         })
       )
     })()
@@ -1255,6 +1327,20 @@ function YarnBall({
   useFrame((_, delta) => {
     const rope = ropeRef.current
     const now = performance.now()
+    const ball = rope[rope.length - 1]
+
+    lineRef.current.visible = true
+    lineRef.current.renderOrder = 1000
+
+    const isOverNavbar = pointerPosition.isOverNavbar
+
+    if (isOverNavbar && !wasOverNavbarRef.current) {
+      grabbedRef.current = false
+      ball.previous.copy(ball.position)
+      grabCooldownUntilRef.current = now + 450
+    }
+
+    wasOverNavbarRef.current = isOverNavbar
 
     // ----------------------------------------------------------
     // ANCHOR
@@ -1310,9 +1396,6 @@ function YarnBall({
       point.position.y -= 0.02
     }
 
-    const ball =
-      rope[rope.length - 1]
-
     // ----------------------------------------------------------
     // DETECT PAW CONTACT
     // ----------------------------------------------------------
@@ -1326,6 +1409,7 @@ const GRAB_RADIUS = 1.8
 
 if (
   !grabbedRef.current &&
+  !pointerPosition.isOverNavbar &&
   now > grabCooldownUntilRef.current &&
   distanceToPaw < GRAB_RADIUS
 ) {
@@ -1707,6 +1791,7 @@ if (now >= releaseAtRef.current) {
     // ----------------------------------------------------------
 
     if (ballRef.current) {
+      ballRef.current.visible = true
       ballRef.current.position.copy(
         ball.position
       )
@@ -1761,21 +1846,61 @@ function CameraView() {
 useGLTF.preload("/cat.glb")
 useGLTF.preload("/Yarn.glb")
 
-export function Kitty3D() {
+export function Kitty3D({
+  scrollWithPage = false,
+  topRegion = false,
+}: {
+  scrollWithPage?: boolean
+  topRegion?: boolean
+}) {
+  const sceneRef = useRef<HTMLDivElement>(null)
   const anchorRef = useRef(YARN_PLANE_POINT.clone())
   const yarnRef = useRef(new THREE.Vector3(YARN_ANCHOR_X, 3.3, 0))
   const pawRef = useRef(new THREE.Vector3())
   const catPushRef = useRef(0)
   const grabbedRef = useRef(false)
 
+  useEffect(() => {
+    if (!scrollWithPage) return
+
+    const moveSceneWithPage = () => {
+      sceneRef.current?.style.setProperty(
+        "transform",
+        `translate3d(0, -${window.scrollY}px, 0)`
+      )
+    }
+
+    moveSceneWithPage()
+    window.addEventListener("scroll", moveSceneWithPage, { passive: true })
+
+    return () => window.removeEventListener("scroll", moveSceneWithPage)
+  }, [scrollWithPage])
+
   return (
-  <div className="pointer-events-none absolute inset-0 h-full w-full">
-    <Canvas
-      gl={{ alpha: true }}
-      camera={{ position: [26, 11.2, 0], fov: 40 }}
-    >
-      <ambientLight intensity={1} />
-      <directionalLight position={[3, 5, 2]} intensity={2} />
+ <div ref={sceneRef} className="pointer-events-none fixed inset-0 z-0 h-screen w-screen">
+  <Canvas
+    className="!pointer-events-none"
+    shadows="percentage"
+    gl={{ alpha: true }}
+    camera={{ position: [26, 11.2, 0], fov: 40 }}
+  >
+      <ambientLight intensity={1.45} />
+      <hemisphereLight args={["#d8fff4", "#07506a", 0.8]} />
+      <directionalLight
+        castShadow
+        position={[16, 48, 22]}
+        intensity={2.7}
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-near={0.5}
+        shadow-camera-far={60}
+        shadow-camera-left={-24}
+        shadow-camera-right={24}
+        shadow-camera-top={24}
+        shadow-camera-bottom={-24}
+        shadow-bias={0.0001}
+        shadow-normalBias={0.08}
+      />
 
       <Suspense fallback={null}>
         <CameraView />
@@ -1783,9 +1908,11 @@ export function Kitty3D() {
         <PointerAnchor anchorRef={anchorRef} />
 
         <CatModel
+          anchorRef={anchorRef}
           yarnRef={yarnRef}
           pawRef={pawRef}
           grabbedRef={grabbedRef}
+          topRegion={topRegion}
         />
 
         <YarnBall

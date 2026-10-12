@@ -1,4 +1,5 @@
 import Image from "next/image"
+import BeyondTheCode from "@/components/BeyondTheCode"
 
 export default function AboutPage() {
   return (
@@ -14,19 +15,19 @@ export default function AboutPage() {
           </p>
 
           <h1 className="animate-fade-up animation-delay-100 mt-3 font-heading text-4xl font-bold text-[#05668D] md:text-6xl">
-            Hi, I&apos;m Jamie.
+            Hi, I'm Jamie.
           </h1>
 
           <p className="animate-fade-up animation-delay-200 mt-6 text-lg leading-8 text-[#05668D]">
-            I&apos;m a Computing Science graduate with a passion for building
-            software, learning new technologies, and solving technical
-            problems.
+            I'm a Computing Science graduate with a passion for building
+            software, storytelling with data, learning new technologies, and solving technical
+            problems through creativity.
           </p>
 
           <p className="animate-fade-up animation-delay-300 mt-4 text-lg leading-8 text-[#05668D]">
             My experience covers web development, software engineering,
             databases, data visualisation, and interactive applications.
-            I&apos;ve worked with technologies including Python, Java, C#,
+            I've worked with technologies including Python, Java, C#,
             JavaScript, SQL, React, and more recently Next.js, TypeScript,
             Three.js, and Blender through my personal projects.
           </p>
@@ -47,6 +48,7 @@ export default function AboutPage() {
               alt="Jamie Till"
               fill
               priority
+              sizes="(max-width: 640px) calc(100vw - 3rem), 384px"
               className="object-cover"
             />
           </div>
@@ -112,72 +114,104 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* SKILLS */}
-      <section className="mt-20">
-        <p className="animate-fade-up font-semibold uppercase tracking-[0.2em] text-[#028090]">
-          Technical experience
-        </p>
+      
+{/* SKILLS */}
+<section className="mt-20">
+  <p className="animate-fade-up font-semibold uppercase tracking-[0.2em] text-[#028090]">
+    Technical experience
+  </p>
 
-        <h2 className="animate-fade-up animation-delay-100 mt-3 font-heading text-3xl font-bold text-[#05668D] md:text-4xl">
-          Technologies I&apos;ve worked with.
-        </h2>
+  <h2 className="animate-fade-up animation-delay-100 mt-3 font-heading text-3xl font-bold text-[#05668D] md:text-4xl">
+    Technologies I've worked with.
+  </h2>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
+  <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
-          <div className="animate-slide-left animation-delay-200 rounded-2xl bg-white/75 p-8 shadow-sm">
-            <h3 className="text-xl font-bold text-[#05668D]">
-              Programming
-            </h3>
+    {/* Programming */}
+    <div className="animate-slide-left animation-delay-200 rounded-2xl bg-white/75 p-8 shadow-sm">
+      <h3 className="text-xl font-bold text-[#05668D]">
+        Programming
+      </h3>
 
-            <div className="mt-5 flex flex-wrap gap-2">
-              {[
-                "Python",
-                "Java",
-                "C#",
-                "C++",
-                "JavaScript",
-                "TypeScript",
-                "SQL",
-              ].map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-full bg-[#F0F3BD] px-3 py-1.5 text-sm font-semibold text-[#05668D]"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
+      <div className="mt-5 flex flex-wrap gap-2">
+        {[
+          "Python",
+          "Java",
+          "C#",
+          "C++",
+          "JavaScript",
+          "TypeScript",
+          "SQL",
+        ].map((skill) => (
+          <span
+            key={skill}
+            className="rounded-full bg-[#F0F3BD] px-3 py-1.5 text-sm font-semibold text-[#05668D]"
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+    </div>
 
-          <div className="animate-slide-right animation-delay-300 rounded-2xl bg-[#02C39A] p-8">
-            <h3 className="text-xl font-bold text-[#05668D]">
-              Web & tools
-            </h3>
+    {/* Web & Tools */}
+    <div className="animate-slide-right animation-delay-300 rounded-2xl bg-[#02C39A] p-8">
+      <h3 className="text-xl font-bold text-[#05668D]">
+        Web & Tools
+      </h3>
 
-            <div className="mt-5 flex flex-wrap gap-2">
-              {[
-                "React",
-                "Next.js",
-                "HTML",
-                "CSS",
-                "Git",
-                "GitHub",
-                "AWS",
-                "Three.js",
-                "Blender",
-              ].map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-full bg-white/40 px-3 py-1.5 text-sm font-semibold text-[#05668D]"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
+      <div className="mt-5 flex flex-wrap gap-2">
+        {[
+          "React",
+          "Next.js",
+          "HTML",
+          "CSS",
+          "Git",
+          "GitHub",
+          "AWS",
+          "Three.js",
+          "Blender",
+        ].map((skill) => (
+          <span
+            key={skill}
+            className="rounded-full bg-white/40 px-3 py-1.5 text-sm font-semibold text-[#05668D]"
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+    </div>
 
-        </div>
-      </section>
+    {/* Data Analysis */}
+    <div className="animate-slide-left animation-delay-200 rounded-2xl bg-white/75 p-8 shadow-sm">
+      <h3 className="text-xl font-bold text-[#05668D]">
+        Data Analysis
+      </h3>
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        {[
+          "Pandas",
+          "Jupyter Notebook",
+          "NumPy",
+          "Matplotlib",
+          "Seaborn",
+          "Scikit-learn",
+          "Excel",
+          "Google Sheets",
+        ].map((skill) => (
+          <span
+            key={skill}
+            className="rounded-full bg-[#F0F3BD] px-3 py-1.5 text-sm font-semibold text-[#05668D]"
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+      <BeyondTheCode />
 
       {/* HOW I WORK */}
       <section className="mt-20 grid gap-6 md:grid-cols-2">
@@ -192,7 +226,7 @@ export default function AboutPage() {
           </h2>
 
           <p className="mt-4 leading-7 text-[#05668D]">
-            I&apos;ve worked in Agile and Scrum environments and enjoy
+            I've worked in Agile and Scrum environments and enjoy
             collaborating with others to solve technical problems. I value
             clear communication, organisation, and being able to explain
             technical ideas in an understandable way.
@@ -201,7 +235,7 @@ export default function AboutPage() {
 
         <div className="animate-slide-right animation-delay-100 rounded-2xl border border-[#02C39A] p-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-[#028090]">
-            What&apos;s next
+            What's next
           </p>
 
           <h2 className="mt-3 text-2xl font-bold text-[#05668D]">
@@ -209,9 +243,9 @@ export default function AboutPage() {
           </h2>
 
           <p className="mt-4 leading-7 text-[#05668D]">
-            I&apos;m continuing to develop my software engineering skills by
+            I'm continuing to develop my software engineering skills by
             building projects, experimenting with new technologies, and
-            applying what I&apos;ve learned to practical problems.
+            applying what I've learned to practical problems.
           </p>
         </div>
 

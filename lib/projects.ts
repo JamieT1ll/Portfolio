@@ -1,3 +1,4 @@
+
 export type ProjectSection = {
   title: string
   text: string
@@ -10,10 +11,18 @@ export type Project = {
   title: string
   subtitle: string
   description: string
-
   tags: string[]
 
+  // Thumbnail shown on the projects listing page
+  thumbnailImage?: string
+  thumbnailImageAlt?: string
+
+  // Main image shown on the individual project page
   heroImage?: string
+  heroImageAlt?: string
+
+  // Project date, formatted as YYYY-MM-DD
+  date: string
 
   role?: string
   type?: string
@@ -25,15 +34,81 @@ export type Project = {
   sections: ProjectSection[]
 }
 
-
 export const projects: Project[] = [
+  {
+    slug: "portfolio-website",
+    title: "Interactive Portfolio Website",
+    subtitle: "Interactive 3D Web Portfolio",
+
+    date: "2026-10-01",
+
+    description:
+      "This portfolio website was built with Next.js and TypeScript with a focus on interactive design and interesting visuals to show off a little and grab users attention. It features custom 3D models created and rigged in Blender, rendered in the browser using Three.js and React Three Fiber. The site includes an interactive animated cat that reacts to and plays with a physics-based yarn ball controlled by the user's mouse, along with other visual elements such as a rotating media carousel and animations.",
+
+    tags: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind",
+      "Three.js",
+      "React Three Fiber",
+      "Blender",
+      "3D",
+      "Animation",
+      "Web Development",
+    ],
+
+    role: "Designer & Developer",
+    type: "Personal Project",
+
+    thumbnailImage: "/images/portfolio.PNG",
+    thumbnailImageAlt: "Interactive Portfolio Website thumbnail",
+
+    heroImage: "/images/portfolio.PNG",
+    heroImageAlt: "Interactive Portfolio Website main preview",
+
+    sections: [
+      {
+        title: "About the project",
+        text:
+          "It feels a little strange writing *about* this website on this website. I created this portfolio as both a place to present my work and explore an opportunity to create a different kind of website than the typical. If I wanted to impress users, I decided it would be best to create engaging and creative visuals with interactive 3D elements.",
+      },
+      {
+        title: "The 3D Cat",
+        text:
+          "Inspired by an old wallpaper I used to use, I dedcided to create a simple, 3D cat to introduce users on the opening page. The 3D elements were created and rigged in Blender before being exported for use on the website.",
+      },
+      {
+        title: "Bringing 3D to the web",
+        text:
+          "The 3D scene is rendered in the browser using Three.js and React Three Fiber, allowing the models and animations to exist alongside the rest of the Next.js interface. The cat was animated through the armatures as part of the models. Animations for tail wagging, blinking, and interactions with the ball were all done as part of the component. Alongside this, a ",
+      },
+  {
+    title: "Interactive cat",
+    text:
+      "The cat reacts to a yarn ball controlled by the user's mouse. Its head follows the ball, and when it gets close enough, the cat will reach out, grab it, and eventually let it go again.",
+  },
+  {
+    title: "The rest of the website",
+    text:
+      "Outside of the 3D elements, I built the rest of the site using Next.js, TypeScript, and Tailwind CSS. I wanted the design to feel fun and personal while keeping everything easy to navigate.",
+  },
+  {
+    title: "Putting my work on display",
+    text:
+      "The projects section gives each project its own page with screenshots, details, and links to the live versions or source code. I also added tag filters to make it easier to find projects by the technologies I've used.",
+  },
+    ],
+  },
+
   {
     slug: "forestscape",
     title: "Forestscape",
     subtitle: "Mobile 3D Therapeutic Game",
 
+    date: "2026-05-01",
+
     description:
-      "A 3D therapeutic game developed in Unity for my honours project. Designed to promote relaxation and help interrupt negative thought patterns through an interactive environment informed by research into game design, soundscapes, wellbeing, and therapeutic practices.",
+      "A 3D therapeutic game developed in Unity for my honours project. It was designed to promote relaxation and help interrupt negative thought patterns through an interactive environment informed by research into game design, soundscapes, and therapeutic practices to promote wellbeing.",
 
     tags: [
       "Unity",
@@ -48,42 +123,52 @@ export const projects: Project[] = [
     type: "Honours Project",
     duration: "3+ Months",
 
+    thumbnailImage: "/images/forestscape.PNG",
+    thumbnailImageAlt: "Forestscape thumbnail",
+
+    heroImage: "/images/forestscape.PNG",
+    heroImageAlt: "Forestscape main project preview",
+
     link: "https://jamiet1ll.github.io/forestscape/",
     github: "https://github.com/JamieT1ll/TileGame",
 
-    sections: [
-      {
-        title: "About the project",
-        text:
-          "Forestscape was developed for my honours project over just three months. I began the project with no previous experience using Unity and little familiarity with the assigned topic of therapeutic practices.",
-      },
-      {
-        title: "The goal",
-        text:
-          "The primary goal was to create an experience that could help users relax, reduce negative thought patterns, and provide a therapeutic experience through an interactive 3D environment.",
-      },
-      {
-        title: "Research and design",
-        text:
-          "Design decisions were informed by research into the effects of game design and soundscapes on wellbeing and how these ideas could be applied through therapeutic practices.",
-      },
-      {
-        title: "Testing and results",
-        text:
-          "Through conducted playtests and interviews, participants reported calm and positive headspaces after using the program. The program was also reported as effective at interrupting negative thought patterns.",
-      },
-      {
-        title: "What I would improve",
-        text:
-          "Looking back, I would spend more time refining the user interface, fine-tuning the balance of the soundscape, and adding more variety to the placeable tile elements.",
-      },
-    ],
+
+sections: [
+  {
+    title: "About the project",
+    text:
+      "Forestscape was developed as my honours project over three months. I started with no previous experience using Unity and set out to build a creative, nature-inspired game designed to support relaxation and emotional wellbeing.",
+  },
+  {
+    title: "The goal",
+    text:
+      "The aim was to create a calming experience where users could build their own forest and shape its soundscape. By combining creativity, natural sounds, and simple game mechanics, I wanted to encourage relaxation and help users step away from negative thought patterns.",
+  },
+  {
+    title: "Research and design",
+    text:
+      "The design was informed by research into creative wellbeing, natural soundscapes, and the use of game mechanics to support focus and relaxation. This shaped features such as guided mode, wildlife interactions, and sounds that change as the user builds out the forest.",
+  },
+  {
+    title: "Testing and results",
+    text:
+      "Playtesting and user interviews helped identify issues with tile placement, controls, and audio balance, which I refined during development. Participants responded positively to the atmosphere and natural sounds, with several describing the experience as calming and seeing potential for managing stress.",
+  },
+  {
+    title: "What I would improve",
+    text:
+      "With more time, I would improve the clarity of the controls, expand the variety of tiles and wildlife, and further balance the audio. I’d also explore more structured ways to measure how the experience affects users’ mood and stress levels.",
+  },
+],
+
   },
 
   {
     slug: "launchpad",
     title: "Launchpad",
     subtitle: "Crowdfunding Web Application",
+
+    date: "2025-12-01",
 
     description:
       "A team-developed crowdfunding web application. I worked primarily on frontend design and documentation, as well as the integration of AI language model APIs. The application included support for handling image and video media.",
@@ -95,10 +180,18 @@ export const projects: Project[] = [
       "Frontend",
       "AI APIs",
       "Team Project",
+      "Web Development",
     ],
 
     role: "Frontend Developer",
     type: "Team Project",
+    duration: "3 Weeks",
+
+    thumbnailImage: "/images/launchpad.png",
+    thumbnailImageAlt: "Launchpad thumbnail",
+
+    heroImage: "/images/launchpad.png",
+    heroImageAlt: "Launchpad main project preview",
 
     github: "https://github.com/victorbratov/launchpad",
 
@@ -136,6 +229,9 @@ export const projects: Project[] = [
     title: "Time Management App",
     subtitle: "Mobile Time Tracking Application",
 
+    date: "2025-03-01",
+    duration: "2 Months",
+
     description:
       "A mobile-focused time management application designed to help users track their time and view trends across different periods. Built using HTML and JavaScript with a focus on providing a simple way to understand how time is being spent.",
 
@@ -144,10 +240,17 @@ export const projects: Project[] = [
       "HTML",
       "Mobile",
       "Time Management",
+      "Application Development",
     ],
 
     role: "Solo Developer",
     type: "Personal Project",
+
+    thumbnailImage: "/images/worklife.PNG",
+    thumbnailImageAlt: "Time Management App thumbnail",
+
+    heroImage: "/images/worklife.PNG",
+    heroImageAlt: "Time Management App main project preview",
 
     link: "https://jamiet1ll.github.io/TimerApp/",
     github: "https://github.com/JamieT1ll/TimerApp",
@@ -175,63 +278,13 @@ export const projects: Project[] = [
       },
     ],
   },
-
-  {
-    slug: "portfolio-website",
-    title: "Interactive Portfolio Website",
-    subtitle: "Interactive 3D Web Portfolio",
-
-    description:
-      "This portfolio website was built with Next.js and TypeScript with a focus on interactive design. It features custom 3D models created and rigged in Blender, rendered in the browser using Three.js and React Three Fiber. The site includes an interactive animated cat that reacts to and plays with a physics-based yarn ball controlled by the user's mouse.",
-
-    tags: [
-      "Next.js",
-      "TypeScript",
-      "Tailwind",
-      "Three.js",
-      "React Three Fiber",
-      "Blender",
-      "3D",
-      "Animation",
-    ],
-
-    role: "Designer & Developer",
-    type: "Personal Project",
-
-    sections: [
-      {
-        title: "About the project",
-        text:
-          "I created this portfolio as both a place to present my work and an opportunity to experiment with combining traditional web development with interactive 3D elements.",
-      },
-      {
-        title: "3D design with Blender",
-        text:
-          "The site's 3D elements were created and rigged in Blender before being exported for use on the web. This includes the animated cat that forms a central interactive element of the portfolio.",
-      },
-      {
-        title: "Bringing 3D to the web",
-        text:
-          "The 3D scene is rendered in the browser using Three.js and React Three Fiber, allowing the models and animations to exist alongside the rest of the Next.js interface.",
-      },
-      {
-        title: "Interactive cat",
-        text:
-          "The cat responds to the position of a yarn ball controlled by the user's mouse. Its head follows the yarn, its arm prepares and attacks when the ball comes within reach, and it can grab and release the yarn.",
-      },
-      {
-        title: "Yarn physics",
-        text:
-          "The yarn uses a custom rope simulation to create a more physical interaction between the mouse, yarn ball, and cat. The ball can move freely, be caught by the cat, and be pushed or released back into the simulation.",
-      },
-      {
-        title: "Design and development",
-        text:
-          "The rest of the portfolio is built with Next.js, TypeScript, and Tailwind CSS, with the 3D interaction designed to complement the portfolio content rather than replace the usability of the surrounding interface.",
-      },
-    ],
-  },
 ]
+
+// Sort newest projects first.
+projects.sort(
+  (a, b) =>
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+)
 
 export function getProject(slug: string) {
   return projects.find((project) => project.slug === slug)

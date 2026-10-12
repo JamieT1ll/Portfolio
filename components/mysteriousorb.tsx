@@ -76,8 +76,9 @@ function Orb() {
 
 export function BuildingOrb() {
   return (
-    <div className="h-32 w-full">
+    <div className="h-12 w-full md:h-32">
       <Canvas
+        className="!pointer-events-none"
         camera={{ position: [0, 0, 4.5], fov: 40 }}
         gl={{ alpha: true }}
       >

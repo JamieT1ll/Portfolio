@@ -135,28 +135,6 @@
   }
 }
 
-.projects-list {
-  display: grid;
-  grid-template-rows: 0fr;
-  opacity: 0;
-}
-
-.projects-list-transition {
-  transition:
-    grid-template-rows 250ms ease,
-    opacity 200ms ease;
-}
-
-.projects-list-content {
-  min-height: 0;
-  overflow: hidden;
-}
-
-.projects-list-open {
-  grid-template-rows: 1fr;
-  opacity: 1;
-}
-
 .welcome-cat {
   position: absolute;
   top: 0;

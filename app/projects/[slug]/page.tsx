@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { ProjectImage } from "@/components/project-image"
 import { getProject, projects } from "@/lib/projects"
 
 export function generateStaticParams() {
@@ -46,33 +47,46 @@ export default async function ProjectPage({
             {project.description}
           </p>
 
-          <div className="animate-fade-up animation-delay-300 mt-8 flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-[#02C39A]/30 px-4 py-2 text-sm font-semibold"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+
+<div className="animate-fade-up animation-delay-300 mt-8 flex flex-wrap gap-2">
+  {project.tags.map((tag) => (
+    <Link
+      key={tag}
+      href={`/projects?tag=${encodeURIComponent(tag)}`}
+      className="rounded-full bg-[#02C39A]/30 px-4 py-2 text-sm font-semibold transition hover:-translate-y-1 hover:bg-[#02C39A]/60"
+    >
+      {tag}
+    </Link>
+  ))}
+</div>
+
         </header>
 
         {/* HERO IMAGE */}
-        {project.heroImage && (
-          <div className="animate-scale-in relative mt-14 aspect-[16/9] overflow-hidden rounded-3xl shadow-lg">
-            <Image
-              src={project.heroImage}
-              alt={project.title}
-              fill
-              priority
-              className="object-cover"
-            />
-          </div>
-        )}
+        <ProjectImage
+          src={project.heroImage}
+          alt={project.heroImageAlt ?? `${project.title} project preview`}
+          sizes="(max-width: 768px) 100vw, 1024px"
+          className="animate-scale-in mt-14 aspect-[16/9] w-full rounded-3xl shadow-lg"
+        />
 
         {/* PROJECT INFO */}
-        <section className="mt-12 grid gap-6 border-y border-[#02C39A] py-8 sm:grid-cols-3">
+        <section className="mt-12 grid gap-6 border-y border-[#02C39A] py-8 sm:grid-cols-2 lg:grid-cols-4">
+
+          <div>
+  <p className="text-xs font-bold uppercase tracking-widest text-[#028090]">
+    Date
+  </p>
+  <p className="mt-2 font-semibold">
+    {new Date(`${project.date}T12:00:00`).toLocaleDateString(
+      "en-GB",
+      {
+        month: "long",
+        year: "numeric",
+      }
+    )}
+  </p>
+</div>
 
           {project.role && (
             <div>

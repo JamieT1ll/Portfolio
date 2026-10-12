@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Public_Sans, DM_Sans, Montserrat, Noto_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { PointerTracker } from "@/components/pointer-tracker";
 
 const notoSansHeading = Noto_Sans({subsets:['latin'],variable:'--font-heading'});
 
@@ -28,7 +29,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={cn("h-full", "light", "antialiased", geistSans.variable, geistMono.variable, "font-sans", montserrat.variable, notoSansHeading.variable)}
     >
-      <body className="min-h-full flex flex-col bg-gray-100">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#F0F3BD]">
+        <PointerTracker />
+        {children}
+      </body>
     </html>
   );
 }
