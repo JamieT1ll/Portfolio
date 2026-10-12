@@ -23,7 +23,7 @@ export function SiteNavigation() {
       {/* PROFILE */}
       <div className="flex items-center justify-between gap-3 md:block">
         <Link
-          href="/home"
+          href="/"
           className="flex items-center gap-3"
         >
           <span className="flex size-12 items-center justify-center rounded-full bg-[#02C39A] text-lg font-bold text-[#05668D] md:size-14 md:text-xl">
@@ -73,7 +73,7 @@ export function SiteNavigation() {
           <NavigationMenuItem>
             <NavigationMenuLink
               className="flex flex-col items-center justify-center gap-1.5 rounded-md px-1 py-2 text-base text-white transition-colors hover:bg-[#028090] hover:text-[#F0F3BD] md:flex-row md:justify-start md:gap-3 md:px-3 md:text-lg"
-              render={<Link href="/home" />}
+              render={<Link href="/" />}
             >
               <RiHomeLine
                 className="size-6 md:size-7"
