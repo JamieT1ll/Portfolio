@@ -60,10 +60,10 @@ export const projects: Project[] = [
     role: "Designer & Developer",
     type: "Personal Project",
 
-    thumbnailImage: "/images/portfolio.PNG",
+    thumbnailImage: "/images/Portfolio.PNG",
     thumbnailImageAlt: "Interactive Portfolio Website thumbnail",
 
-    heroImage: "/images/portfolio.PNG",
+    heroImage: "/images/Portfolio.PNG",
     heroImageAlt: "Interactive Portfolio Website main preview",
 
     sections: [
@@ -187,10 +187,10 @@ sections: [
     type: "Team Project",
     duration: "3 Weeks",
 
-    thumbnailImage: "/images/launchpad.png",
+    thumbnailImage: "/images/Launchpad.png",
     thumbnailImageAlt: "Launchpad thumbnail",
 
-    heroImage: "/images/launchpad.png",
+    heroImage: "/images/Launchpad.png",
     heroImageAlt: "Launchpad main project preview",
 
     github: "https://github.com/victorbratov/launchpad",
@@ -246,10 +246,10 @@ sections: [
     role: "Solo Developer",
     type: "Personal Project",
 
-    thumbnailImage: "/images/worklife.PNG",
+    thumbnailImage: "/images/WorkLife.PNG",
     thumbnailImageAlt: "Time Management App thumbnail",
 
-    heroImage: "/images/worklife.PNG",
+    heroImage: "/images/WorkLife.PNG",
     heroImageAlt: "Time Management App main project preview",
 
     link: "https://jamiet1ll.github.io/TimerApp/",
