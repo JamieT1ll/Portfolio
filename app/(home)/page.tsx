@@ -21,7 +21,7 @@ export default function HomePage() {
       </p>
 
       <h1 className="animate-fade-up animation-delay-100 max-w-xl font-heading text-5xl font-bold leading-tight text-[#05668D] md:text-7xl">
-        Hi fucker, I'm Jamie.
+        Hi, I'm Jamie.
       </h1>
 
       <p className="animate-fade-up animation-delay-200 mt-6 max-w-xl text-lg leading-8 text-[#05668D]">
